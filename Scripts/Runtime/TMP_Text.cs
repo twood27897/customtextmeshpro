@@ -7590,12 +7590,12 @@ namespace TMPro
                     case 2959: // </TD>
                         return true;
                     // BEGIN - helloimtw
-                    case 1919191: // <wavy>
-                    case 1919192: // <WAVY>
+                    case 46517: // <wavy>
+                    case 33717: // <WAVY>
                         tag_isWavy = true;
                         return true;
-                    case 1919193: // </wavy>
-                    case 1919194: // </WAVY>
+                    case 159364: // </wavy>
+                    case 146564: // </WAVY>
                         tag_isWavy = false;
                         return true;
                     // END - helloimtw
