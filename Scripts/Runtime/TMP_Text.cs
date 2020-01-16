@@ -1343,6 +1343,9 @@ namespace TMPro
         protected Matrix4x4 m_FXMatrix;
         protected bool m_isFXMatrixSet;
 
+        // BEGIN - helloimtw
+        protected bool tag_isWavy;
+        // END - helloimtw
 
         protected UnicodeChar[] m_TextParsingBuffer; // This array holds the characters to be processed by GenerateMesh();
 
@@ -3761,6 +3764,9 @@ namespace TMPro
 
             m_characterCount = 0; // Total characters in the char[]
 
+            // BEGIN - helloimtw
+            tag_isWavy = false;
+            // END - helloimtw
 
             // Tracking of line information
             m_firstCharacterOfLine = 0;
@@ -6188,9 +6194,9 @@ namespace TMPro
                 return false;
             }
 
-            //Debug.Log("Tag is [" + m_htmlTag.ArrayToString() + "].  Tag HashCode: " + m_xmlAttribute[0].nameHashCode + "  Tag Value HashCode: " + m_xmlAttribute[0].valueHashCode + "  Attribute 1 HashCode: " + m_xmlAttribute[1].nameHashCode + " Value HashCode: " + m_xmlAttribute[1].valueHashCode);
-            //for (int i = 0; i < attributeIndex; i++)
-            //    Debug.Log("Tag [" + i + "] with HashCode: " + m_xmlAttribute[i].nameHashCode + " has value of [" + new string(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength) + "] Numerical Value: " + ConvertToFloat(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength));
+            Debug.Log("Tag is [" + m_htmlTag.ArrayToString() + "].  Tag HashCode: " + m_xmlAttribute[0].nameHashCode + "  Tag Value HashCode: " + m_xmlAttribute[0].valueHashCode + "  Attribute 1 HashCode: " + m_xmlAttribute[1].nameHashCode + " Value HashCode: " + m_xmlAttribute[1].valueHashCode);
+            for (int i = 0; i < attributeIndex; i++)
+                Debug.Log("Tag [" + i + "] with HashCode: " + m_xmlAttribute[i].nameHashCode + " has value of [" + new string(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength) + "] Numerical Value: " + ConvertToFloat(m_htmlTag, m_xmlAttribute[i].valueStartIndex, m_xmlAttribute[i].valueLength));
 
             #region Rich Text Tag Processing
             #if !RICH_TEXT_ENABLED
@@ -7583,6 +7589,16 @@ namespace TMPro
                     case 3215: // </td>
                     case 2959: // </TD>
                         return true;
+                    // BEGIN - helloimtw
+                    case 1919191: // <wavy>
+                    case 1919192: // <WAVY>
+                        tag_isWavy = true;
+                        return true;
+                    case 1919193: // </wavy>
+                    case 1919194: // </WAVY>
+                        tag_isWavy = false;
+                        return true;
+                    // END - helloimtw
                 }
             }
             #endif

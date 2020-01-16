@@ -2000,6 +2000,10 @@ namespace TMPro
                 }
                 #endregion
 
+                // BEGIN - helloimtw
+                // Store wavy information for the character or sprite
+                m_textInfo.characterInfo[m_characterCount].wavy = tag_isWavy;
+                // BEGIN - helloimtw
 
                 // Store some of the text object's information
                 m_textInfo.characterInfo[m_characterCount].character = (char)charCode;

@@ -69,5 +69,9 @@ namespace TMPro
         public FontStyles style;
         public bool isVisible;
         //public bool isIgnoringAlignment;
+
+        // BEGIN - helloimtw
+        public bool wavy;
+        // END - helloimtw
     }
 }
