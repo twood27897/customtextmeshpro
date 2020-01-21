@@ -72,6 +72,8 @@ namespace TMPro
 
         // BEGIN - helloimtw
         public bool wavy;
+        public bool colourful;
+        public bool shaky;
         // END - helloimtw
     }
 }

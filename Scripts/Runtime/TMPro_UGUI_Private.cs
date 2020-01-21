@@ -2003,7 +2003,17 @@ namespace TMPro
                 // BEGIN - helloimtw
                 // Store wavy information for the character or sprite
                 m_textInfo.characterInfo[m_characterCount].wavy = tag_isWavy;
+                // END - helloimtw
+
                 // BEGIN - helloimtw
+                // Store colourful information for the character or sprite
+                m_textInfo.characterInfo[m_characterCount].colourful = tag_isColourful;
+                // END - helloimtw
+
+                // BEGIN - helloimtw
+                // Store shaky information for the character or sprite
+                m_textInfo.characterInfo[m_characterCount].shaky = tag_isShaky;
+                // END - helloimtw
 
                 // Store some of the text object's information
                 m_textInfo.characterInfo[m_characterCount].character = (char)charCode;
