@@ -39,17 +39,32 @@ namespace TMPro.EditorUtilities
 
                 DrawPadding();
 
-                // BEGIN - helloimtw
+                EditorGUI.indentLevel -= 1;
+            }
+        }
+
+        // BEGIN - helloimtw
+        protected override void DrawTagSettings()
+        {
+            EditorGUILayout.Space();
+
+            Foldout.tagSettings = EditorGUILayout.Foldout(Foldout.tagSettings, k_TagSettingsLabel, true, TMP_UIStyleManager.boldFoldout);
+            if (Foldout.tagSettings)
+            {
+                EditorGUI.indentLevel += 1;
+
+                DrawTagPreviewSettings();
+
                 DrawWaveSettings();
 
                 DrawShakeSettings();
 
                 DrawColourfulSettings();
-                // END - helloimtw
 
                 EditorGUI.indentLevel -= 1;
             }
         }
+        // END - helloimtw
 
         protected void DrawRaycastTarget()
         {

@@ -62,6 +62,8 @@ namespace TMPro.EditorUtilities
         static readonly GUIContent k_PaddingLabel = new GUIContent("Extra Padding", "Adds some padding between the characters and the edge of the text mesh. Can reduce graphical errors when displaying small text.");
 
         // BEGIN - helloimtw
+        static readonly GUIContent k_PreviewTagsLabel = new GUIContent("Preview Tags", "Allows you to preview runtime tags on the current component.");
+
         static readonly GUIContent k_WaveScaleLabel = new GUIContent("Wave Scale", "The scale of the wave in the y-axis. How far the letters will move up and down.");
         static readonly GUIContent k_WaveSpeedLabel = new GUIContent("Wave Speed", "The speed of the wave. How fast the letters will move up and down.");
         static readonly GUIContent k_WaveDistanceBetweenLettersLabel = new GUIContent("Distance Between Letters In Wave", "The distance between the letters in the wave. 0 means all letters will move together. The greater this value the more letters will move independently of one another in the wave.");
@@ -75,6 +77,8 @@ namespace TMPro.EditorUtilities
         static readonly GUIContent k_ColourCycleLabel = new GUIContent("Colour Cycle", "The gradient of colours the letters will go through as they change.");
         static readonly GUIContent k_ColourCycleSpeedLabel = new GUIContent("Colour Cycle Speed", "The speed at which the letters will change colour.");
         static readonly GUIContent k_ColourCycleOffsetLabel = new GUIContent("Colour Cycle Offset", "The difference by which colours will sample the gradient provided. 0 means all letters will change colour together.");
+
+        protected static readonly GUIContent k_TagSettingsLabel = new GUIContent("Tag Settings");
         // END - helloimtw
 
         static readonly GUIContent k_LeftLabel = new GUIContent("Left");
@@ -88,6 +92,9 @@ namespace TMPro.EditorUtilities
         {
             // Track Inspector foldout panel states, globally.
             public static bool extraSettings = false;
+            // BEGIN - helloimtw
+            public static bool tagSettings = false;
+            // END - helloimtw
             public static bool materialInspector = true;
         }
         
@@ -158,6 +165,8 @@ namespace TMPro.EditorUtilities
         protected SerializedProperty m_GeometrySortingOrderProp;
 
         // BEGIN - helloimtw
+        protected SerializedProperty m_PreviewTagsProp;
+
         protected SerializedProperty m_WaveScaleProp;
         protected SerializedProperty m_WaveSpeedProp;
         protected SerializedProperty m_WaveDistanceBetweenLettersProp;
@@ -245,6 +254,8 @@ namespace TMPro.EditorUtilities
             m_UseMaxVisibleDescenderProp = serializedObject.FindProperty("m_useMaxVisibleDescender");
 
             // BEGIN - helloimtw
+            m_PreviewTagsProp = serializedObject.FindProperty("m_previewTags");
+
             m_WaveScaleProp = serializedObject.FindProperty("m_waveScale");
             m_WaveSpeedProp = serializedObject.FindProperty("m_waveSpeed");
             m_WaveDistanceBetweenLettersProp = serializedObject.FindProperty("m_waveDistanceBetweenLetters");
@@ -309,6 +320,10 @@ namespace TMPro.EditorUtilities
             DrawMainSettings();
 
             DrawExtraSettings();
+
+            // BEGIN - helloimtw
+            DrawTagSettings();
+            // END - helloimtw
 
             EditorGUILayout.Space();
 
@@ -1076,6 +1091,15 @@ namespace TMPro.EditorUtilities
         }
 
         // BEGIN - helloimtw
+        protected abstract void DrawTagSettings();
+
+        protected void DrawTagPreviewSettings()
+        {
+            EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(m_PreviewTagsProp, k_PreviewTagsLabel);
+        }
+
         protected void DrawWaveSettings()
         {
             EditorGUILayout.Space();

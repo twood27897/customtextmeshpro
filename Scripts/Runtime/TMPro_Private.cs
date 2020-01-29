@@ -68,7 +68,7 @@ namespace TMPro
         {
             //Debug.Log("***** Awake() called on object ID " + GetInstanceID() + ". *****");
 
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             // Special handling for TMP Settings and importing Essential Resources
             if (TMP_Settings.instance == null)
             {
@@ -78,7 +78,7 @@ namespace TMPro
                 m_isWaitingOnResourceLoad = true;
                 return;
             }
-            #endif
+#endif
 
             // Cache Reference to the Mesh Renderer.
             m_renderer = GetComponent<Renderer>();
@@ -169,7 +169,7 @@ namespace TMPro
             // Register Callbacks for various events.
             if (!m_isRegisteredForEvents)
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                 TMPro_EventManager.MATERIAL_PROPERTY_EVENT.Add(ON_MATERIAL_PROPERTY_CHANGED);
                 TMPro_EventManager.FONT_PROPERTY_EVENT.Add(ON_FONT_PROPERTY_CHANGED);
                 TMPro_EventManager.TEXTMESHPRO_PROPERTY_EVENT.Add(ON_TEXTMESHPRO_PROPERTY_CHANGED);
@@ -177,7 +177,7 @@ namespace TMPro
                 TMPro_EventManager.TEXT_STYLE_PROPERTY_EVENT.Add(ON_TEXT_STYLE_CHANGED);
                 TMPro_EventManager.COLOR_GRADIENT_PROPERTY_EVENT.Add(ON_COLOR_GRADIENT_CHANGED);
                 TMPro_EventManager.TMP_SETTINGS_PROPERTY_EVENT.Add(ON_TMP_SETTINGS_CHANGED);
-                #endif
+#endif
                 m_isRegisteredForEvents = true;
             }
 
@@ -223,7 +223,7 @@ namespace TMPro
             }
 
             // Unregister the event this object was listening to
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             TMPro_EventManager.MATERIAL_PROPERTY_EVENT.Remove(ON_MATERIAL_PROPERTY_CHANGED);
             TMPro_EventManager.FONT_PROPERTY_EVENT.Remove(ON_FONT_PROPERTY_CHANGED);
             TMPro_EventManager.TEXTMESHPRO_PROPERTY_EVENT.Remove(ON_TEXTMESHPRO_PROPERTY_CHANGED);
@@ -232,7 +232,7 @@ namespace TMPro
             TMPro_EventManager.COLOR_GRADIENT_PROPERTY_EVENT.Remove(ON_COLOR_GRADIENT_CHANGED);
             TMPro_EventManager.TMP_SETTINGS_PROPERTY_EVENT.Remove(ON_TMP_SETTINGS_CHANGED);
             TMPro_EventManager.RESOURCE_LOAD_EVENT.Remove(ON_RESOURCES_LOADED);
-            #endif
+#endif
 
             m_isRegisteredForEvents = false;
             TMP_UpdateManager.UnRegisterTextElementForRebuild(this);
@@ -240,11 +240,11 @@ namespace TMPro
         }
 
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         protected override void Reset()
         {
             //Debug.Log("Reset() has been called." + m_subTextObjects);
-            
+
             // Return if Awake() has not been called on the text object.
             if (m_isAwake == false)
                 return;
@@ -259,7 +259,7 @@ namespace TMPro
         protected override void OnValidate()
         {
             //Debug.Log("*** TextMeshPro OnValidate() has been called on Object ID:" + gameObject.GetInstanceID());
-            
+
             // Return if Awake() has not been called on the text object.
             if (m_isAwake == false)
                 return;
@@ -356,7 +356,7 @@ namespace TMPro
             }
         }
 
-     
+
         // Event received when UNDO / REDO Event alters the properties of the object.
         void ON_TEXTMESHPRO_PROPERTY_CHANGED(bool isChanged, TextMeshPro obj)
         {
@@ -379,11 +379,11 @@ namespace TMPro
             //Debug.Log("Drag-n-Drop Event - Receiving Object ID " + GetInstanceID()); // + ". Target Object ID " + obj.GetInstanceID() + ".  New Material is " + mat.name + " with ID " + mat.GetInstanceID() + ". Base Material is " + m_baseMaterial.name + " with ID " + m_baseMaterial.GetInstanceID());
 
             // Check if event applies to this current object
-            #if UNITY_2018_2_OR_NEWER
+#if UNITY_2018_2_OR_NEWER
             if (obj == gameObject || UnityEditor.PrefabUtility.GetCorrespondingObjectFromSource(gameObject) == obj)
-            #else
+#else
             if (obj == gameObject || UnityEditor.PrefabUtility.GetPrefabParent(gameObject) == obj)
-            #endif
+#endif
             {
                 UnityEditor.Undo.RecordObject(this, "Material Assignment");
                 UnityEditor.Undo.RecordObject(m_renderer, "Material Assignment");
@@ -434,7 +434,7 @@ namespace TMPro
 #endif
 
 
-            // Function which loads either the default font or a newly assigned font asset. This function also assigned the appropriate material to the renderer.
+        // Function which loads either the default font or a newly assigned font asset. This function also assigned the appropriate material to the renderer.
         protected override void LoadFontAsset()
         {
             //Debug.Log("TextMeshPro LoadFontAsset() has been called."); // Current Font Asset is " + (font != null ? font.name: "Null") );
@@ -444,7 +444,7 @@ namespace TMPro
             if (m_fontAsset == null)
             {
                 if (TMP_Settings.defaultFontAsset != null)
-                    m_fontAsset =TMP_Settings.defaultFontAsset;
+                    m_fontAsset = TMP_Settings.defaultFontAsset;
                 else
                     m_fontAsset = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
 
@@ -481,7 +481,7 @@ namespace TMPro
                 if (m_renderer.sharedMaterial == null || m_renderer.sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex) == null || m_fontAsset.atlasTexture.GetInstanceID() != m_renderer.sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID())
                 {
                     m_renderer.sharedMaterial = m_fontAsset.material;
-                    m_sharedMaterial = m_fontAsset.material; 
+                    m_sharedMaterial = m_fontAsset.material;
                 }
                 else
                 {
@@ -532,7 +532,7 @@ namespace TMPro
         //
         void SetMask(MaskingTypes maskType)
         {
-            switch(maskType)
+            switch (maskType)
             {
                 case MaskingTypes.MaskOff:
                     m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_SOFT);
@@ -549,11 +549,11 @@ namespace TMPro
                     m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_SOFT);
                     m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_TEX);
                     break;
-                //case MaskingTypes.MaskTex:
-                //    m_sharedMaterial.EnableKeyword(ShaderUtilities.Keyword_MASK_TEX);
-                //    m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_HARD);
-                //    m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_SOFT);
-                //    break;
+                    //case MaskingTypes.MaskTex:
+                    //    m_sharedMaterial.EnableKeyword(ShaderUtilities.Keyword_MASK_TEX);
+                    //    m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_HARD);
+                    //    m_sharedMaterial.DisableKeyword(ShaderUtilities.Keyword_MASK_SOFT);
+                    //    break;
             }
         }
 
@@ -607,7 +607,7 @@ namespace TMPro
         void UpdateMask()
         {
             //Debug.Log("UpdateMask() called.");
-            
+
             if (!m_isMaskingEnabled)
             {
                 // Release Masking Material
@@ -616,13 +616,13 @@ namespace TMPro
 
                 return;
             }
-            
+
             if (m_isMaskingEnabled && m_fontMaterial == null)
             {
                 CreateMaterialInstance();
             }
 
-            
+
             /*
             if (!m_isMaskingEnabled)
             {
@@ -637,17 +637,17 @@ namespace TMPro
             //else
             //    Debug.Log("Updating Masking...");
             */
-             
+
             // Compute Masking Coordinates & Softness
             //float softnessX = Mathf.Min(Mathf.Min(m_textContainer.margins.x, m_textContainer.margins.z), m_sharedMaterial.GetFloat(ShaderUtilities.ID_MaskSoftnessX));
             //float softnessY = Mathf.Min(Mathf.Min(m_textContainer.margins.y, m_textContainer.margins.w), m_sharedMaterial.GetFloat(ShaderUtilities.ID_MaskSoftnessY));
 
             //softnessX = softnessX > 0 ? softnessX : 0;
             //softnessY = softnessY > 0 ? softnessY : 0;
-           
+
             //float width = (m_textContainer.width - Mathf.Max(m_textContainer.margins.x, 0) - Mathf.Max(m_textContainer.margins.z, 0)) / 2 + softnessX;
             //float height =  (m_textContainer.height - Mathf.Max(m_textContainer.margins.y, 0) - Mathf.Max(m_textContainer.margins.w, 0)) / 2 + softnessY;
-          
+
             //Vector2 center = new Vector2((0.5f - m_textContainer.pivot.x) * m_textContainer.width + (Mathf.Max(m_textContainer.margins.x, 0) - Mathf.Max(m_textContainer.margins.z, 0)) / 2, (0.5f - m_textContainer.pivot.y) * m_textContainer.height + (- Mathf.Max(m_textContainer.margins.y, 0) + Mathf.Max(m_textContainer.margins.w, 0)) / 2);                           
             //Vector4 mask = new Vector4(center.x, center.y, width, height);
 
@@ -791,7 +791,7 @@ namespace TMPro
                 if (i == 0)
                 {
                     // Only assign new material if the font atlas textures match.
-                    if ( mat_MainTex == null || mat_MainTex.GetInstanceID() != m_sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID())
+                    if (mat_MainTex == null || mat_MainTex.GetInstanceID() != m_sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID())
                         continue;
 
                     m_sharedMaterial = m_fontSharedMaterials[i] = materials[i];
@@ -882,7 +882,7 @@ namespace TMPro
                 // Should this use an instanced material?
                 m_sharedMaterial.SetFloat(ShaderUtilities.ShaderTag_ZTestMode, 4);
                 m_renderer.material.renderQueue = -1;
-                
+
                 m_sharedMaterial = m_renderer.material;
                 //Debug.Log("Text set to Normal mode.");
             }
@@ -2865,7 +2865,7 @@ namespace TMPro
                         isFirstWord = false;
                     }
                     // Handling for East Asian languages
-                    else if ((  charCode > 0x1100 && charCode < 0x11ff || /* Hangul Jamo */
+                    else if ((charCode > 0x1100 && charCode < 0x11ff || /* Hangul Jamo */
                                 charCode > 0x2E80 && charCode < 0x9FFF || /* CJK */
                                 charCode > 0xA960 && charCode < 0xA97F || /* Hangul Jame Extended-A */
                                 charCode > 0xAC00 && charCode < 0xD7FF || /* Hangul Syllables */
@@ -3070,11 +3070,11 @@ namespace TMPro
                     case TextAlignmentOptions.BaselineLeft:
                     case TextAlignmentOptions.MidlineLeft:
                     case TextAlignmentOptions.CaplineLeft:
-                            if (!m_isRightToLeft)
-                                justificationOffset = new Vector3(0 + lineInfo.marginLeft, 0, 0);
-                            else
-                                justificationOffset = new Vector3(0 - lineInfo.maxAdvance, 0, 0);
-                            break;
+                        if (!m_isRightToLeft)
+                            justificationOffset = new Vector3(0 + lineInfo.marginLeft, 0, 0);
+                        else
+                            justificationOffset = new Vector3(0 - lineInfo.maxAdvance, 0, 0);
+                        break;
 
                     case TextAlignmentOptions.Top:
                     case TextAlignmentOptions.Center:
@@ -3341,7 +3341,7 @@ namespace TMPro
                             characterInfos[i].vertex_BR.uv2.x = PackUV(x1, y0); characterInfos[i].vertex_BR.uv2.y = xScale;
                             #endregion
                             break;
-                        
+
                         // SPRITES
                         case TMP_TextElementType.Sprite:
                             // Nothing right now
@@ -3766,7 +3766,7 @@ namespace TMPro
                             highlight_start.y = Mathf.Min(highlight_start.y, m_textInfo.characterInfo[i].descender);
 
                             highlight_end.x = Mathf.Max(highlight_end.x, m_textInfo.characterInfo[i].topRight.x);
-                            highlight_end.y = Mathf.Max(highlight_end.y, m_textInfo.characterInfo[i].ascender); 
+                            highlight_end.y = Mathf.Max(highlight_end.y, m_textInfo.characterInfo[i].ascender);
                         }
                     }
 
@@ -4064,14 +4064,18 @@ namespace TMPro
         // BEGIN - helloimtw
         void LateUpdate()
         {
-            // Force the text object to update right away so we can have geometry to modify right from the start.
-            ForceMeshUpdate();
+            if (Application.isPlaying || previewTags)
+            {
+                // Force the text object to update right away so we can have geometry to modify right from the start.
+                ForceMeshUpdate();
 
-            AnimateVertexWaves();
-            AnimateVertexShakes();
-            AnimateVertexColors();
+                AnimateVertexWaves();
+                AnimateVertexShakes();
+                AnimateVertexColors();
 
-            _timer += Time.deltaTime;
+                _timer += Time.deltaTime;
+                _shakesTimer += Time.deltaTime;
+            }
         }
 
         // Method to animate vertex positions of a TMP Text object as a wave.
@@ -4153,82 +4157,79 @@ namespace TMPro
         // Method to animate vertex positions of a TMP Text object as shaking.
         void AnimateVertexShakes()
         {
-            Matrix4x4 matrix;
-
-            bool hasTextChanged = true;
-
-            // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the characters.
-            TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
-            
-            // Get new copy of vertex data if the text has changed.
-            if (hasTextChanged)
+            if (_shakesTimer > (1.0f / shakesPerSecond))
             {
-                // Update the copy of the vertex data for the text object.
-                cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
+                _shakesTimer = 0.0f;
 
-                hasTextChanged = false;
-            }
+                Matrix4x4 matrix;
 
-            for (int i = 0; i < textInfo.characterInfo.Length; i++)
-            {
-                // Skip characters that are not visible and thus have no geometry to manipulate.
-                if (!textInfo.characterInfo[i].isVisible)
-                    continue;
+                bool hasTextChanged = true;
 
-                if (textInfo.characterInfo[i].shaky)
+                // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the characters.
+                TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
+
+                // Get new copy of vertex data if the text has changed.
+                if (hasTextChanged)
                 {
-                    // Retrieve the pre-computed animation data for the given character.
-                    //VertexAnim vertAnim = vertexAnim[i];
+                    // Update the copy of the vertex data for the text object.
+                    cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
 
-                    // Get the index of the material used by the current character.
-                    int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
-
-                    // Get the index of the first vertex used by this text element.
-                    int vertexIndex = textInfo.characterInfo[i].vertexIndex;
-
-                    // Get the cached vertices of the mesh used by this text element (character or sprite).
-                    Vector3[] sourceVertices = cachedMeshInfo[materialIndex].vertices;
-
-                    // Determine the center point of each character at the baseline.
-                    //Vector2 charMidBasline = new Vector2((sourceVertices[vertexIndex + 0].x + sourceVertices[vertexIndex + 2].x) / 2, charInfo.baseLine);
-                    // Determine the center point of each character.
-                    Vector2 charMidBasline = (sourceVertices[vertexIndex + 0] + sourceVertices[vertexIndex + 2]) / 2;
-
-                    // Need to translate all 4 vertices of each quad to aligned with middle of character / baseline.
-                    // This is needed so the matrix TRS is applied at the origin for each character.
-                    Vector3 offset = charMidBasline;
-
-                    Vector3[] destinationVertices = textInfo.meshInfo[materialIndex].vertices;
-
-                    destinationVertices[vertexIndex + 0] = sourceVertices[vertexIndex + 0] - offset;
-                    destinationVertices[vertexIndex + 1] = sourceVertices[vertexIndex + 1] - offset;
-                    destinationVertices[vertexIndex + 2] = sourceVertices[vertexIndex + 2] - offset;
-                    destinationVertices[vertexIndex + 3] = sourceVertices[vertexIndex + 3] - offset;
-
-                    //vertAnim.angle = Mathf.SmoothStep(-vertAnim.angleRange, vertAnim.angleRange, Mathf.PingPong(loopCount / 25f * vertAnim.speed, 1f));
-                    Vector3 jitterOffset = new Vector3(UnityEngine.Random.Range(minPositionShake.x, maxPositionShake.x) * RandomPosOrNeg(), UnityEngine.Random.Range(minPositionShake.y, maxPositionShake.y) * RandomPosOrNeg(), 0);
-
-                    matrix = Matrix4x4.TRS(jitterOffset, Quaternion.Euler(0, 0, UnityEngine.Random.Range(minAngleShake, maxAngleShake) * RandomPosOrNeg()), Vector3.one);
-
-                    destinationVertices[vertexIndex + 0] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 0]);
-                    destinationVertices[vertexIndex + 1] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 1]);
-                    destinationVertices[vertexIndex + 2] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 2]);
-                    destinationVertices[vertexIndex + 3] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 3]);
-
-                    destinationVertices[vertexIndex + 0] += offset;
-                    destinationVertices[vertexIndex + 1] += offset;
-                    destinationVertices[vertexIndex + 2] += offset;
-                    destinationVertices[vertexIndex + 3] += offset;
-
-                    //vertexAnim[i] = vertAnim;
+                    hasTextChanged = false;
                 }
-            }
 
-            // Push changes into meshes
-            for (int i = 0; i < textInfo.meshInfo.Length; i++)
-            {
-                textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
-                UpdateGeometry(textInfo.meshInfo[i].mesh, i);
+                for (int i = 0; i < textInfo.characterInfo.Length; i++)
+                {
+                    // Skip characters that are not visible and thus have no geometry to manipulate.
+                    if (!textInfo.characterInfo[i].isVisible)
+                        continue;
+
+                    if (textInfo.characterInfo[i].shaky)
+                    {
+                        // Get the index of the material used by the current character.
+                        int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
+
+                        // Get the index of the first vertex used by this text element.
+                        int vertexIndex = textInfo.characterInfo[i].vertexIndex;
+
+                        // Get the cached vertices of the mesh used by this text element (character or sprite).
+                        Vector3[] sourceVertices = cachedMeshInfo[materialIndex].vertices;
+                        
+                        // Determine the center point of each character.
+                        Vector2 charCenter = (sourceVertices[vertexIndex + 0] + sourceVertices[vertexIndex + 2]) / 2;
+
+                        // Need to translate all 4 vertices of each quad to aligned with middle of character / baseline.
+                        // This is needed so the matrix TRS is applied at the origin for each character.
+                        Vector3 offset = charCenter;
+
+                        Vector3[] destinationVertices = textInfo.meshInfo[materialIndex].vertices;
+
+                        destinationVertices[vertexIndex + 0] = sourceVertices[vertexIndex + 0] - offset;
+                        destinationVertices[vertexIndex + 1] = sourceVertices[vertexIndex + 1] - offset;
+                        destinationVertices[vertexIndex + 2] = sourceVertices[vertexIndex + 2] - offset;
+                        destinationVertices[vertexIndex + 3] = sourceVertices[vertexIndex + 3] - offset;
+                        
+                        Vector3 jitterOffset = new Vector3(UnityEngine.Random.Range(minPositionShake.x, maxPositionShake.x) * RandomPosOrNeg(), UnityEngine.Random.Range(minPositionShake.y, maxPositionShake.y) * RandomPosOrNeg(), 0);
+
+                        matrix = Matrix4x4.TRS(jitterOffset, Quaternion.Euler(0, 0, UnityEngine.Random.Range(minAngleShake, maxAngleShake) * RandomPosOrNeg()), Vector3.one);
+
+                        destinationVertices[vertexIndex + 0] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 0]);
+                        destinationVertices[vertexIndex + 1] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 1]);
+                        destinationVertices[vertexIndex + 2] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 2]);
+                        destinationVertices[vertexIndex + 3] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 3]);
+
+                        destinationVertices[vertexIndex + 0] += offset;
+                        destinationVertices[vertexIndex + 1] += offset;
+                        destinationVertices[vertexIndex + 2] += offset;
+                        destinationVertices[vertexIndex + 3] += offset;
+                    }
+                }
+
+                // Push changes into meshes
+                for (int i = 0; i < textInfo.meshInfo.Length; i++)
+                {
+                    textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
+                    UpdateGeometry(textInfo.meshInfo[i].mesh, i);
+                }
             }
         }
 

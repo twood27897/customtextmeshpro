@@ -765,6 +765,17 @@ namespace TMPro
 
         // BEGIN - helloimtw
         /// <summary>
+        /// Parameter whhich when true allows you to preview the runtime tags on the text component you are on
+        /// </summary>
+        public bool previewTags
+        {
+            get { return m_previewTags; }
+            set { if (m_previewTags == value) return; m_havePropertiesChanged = true; m_previewTags = value; }
+        }
+        [SerializeField]
+        protected bool m_previewTags = false;
+
+        /// <summary>
         /// Parameters which control the way the wavy tag works on this text element
         /// </summary>
         public float waveScale
@@ -862,6 +873,7 @@ namespace TMPro
         protected float m_colourCycleOffset = 0.0f;
 
         protected float _timer = 0.0f;
+        protected float _shakesTimer = 0.0f;
         // END - helloimtw
 
 

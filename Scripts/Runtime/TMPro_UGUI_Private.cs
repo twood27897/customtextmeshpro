@@ -4328,14 +4328,18 @@ namespace TMPro
         // BEGIN - helloimtw
         void LateUpdate()
         {
-            // We force an update of the text object since it would only be updated at the end of the frame. Ie. before this code is executed on the first frame.
-            ForceMeshUpdate();
+            if (Application.isPlaying || previewTags)
+            {
+                // We force an update of the text object since it would only be updated at the end of the frame. Ie. before this code is executed on the first frame.
+                ForceMeshUpdate();
 
-            AnimateVertexWaves();
-            AnimateVertexShakes();
-            AnimateVertexColors();
+                AnimateVertexWaves();
+                AnimateVertexShakes();
+                AnimateVertexColors();
 
-            _timer += Time.deltaTime;
+                _timer += Time.deltaTime;
+                _shakesTimer += Time.deltaTime;
+            }
         }
 
         // Method to animate vertex positions of a TMP Text object as a wave.
@@ -4417,82 +4421,79 @@ namespace TMPro
         // Method to animate vertex positions of a TMP Text object as shaking.
         void AnimateVertexShakes()
         {
-            Matrix4x4 matrix;
-
-            bool hasTextChanged = true;
-
-            // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the characters.
-            TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
-
-            // Get new copy of vertex data if the text has changed.
-            if (hasTextChanged)
+            if (_shakesTimer > (1.0f / shakesPerSecond))
             {
-                // Update the copy of the vertex data for the text object.
-                cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
+                _shakesTimer = 0.0f;
 
-                hasTextChanged = false;
-            }
+                Matrix4x4 matrix;
 
-            for (int i = 0; i < textInfo.characterInfo.Length; i++)
-            {
-                // Skip characters that are not visible and thus have no geometry to manipulate.
-                if (!textInfo.characterInfo[i].isVisible)
-                    continue;
+                bool hasTextChanged = true;
 
-                if (textInfo.characterInfo[i].shaky)
+                // Cache the vertex data of the text object as the Jitter FX is applied to the original position of the characters.
+                TMP_MeshInfo[] cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
+
+                // Get new copy of vertex data if the text has changed.
+                if (hasTextChanged)
                 {
-                    // Retrieve the pre-computed animation data for the given character.
-                    //VertexAnim vertAnim = vertexAnim[i];
+                    // Update the copy of the vertex data for the text object.
+                    cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
 
-                    // Get the index of the material used by the current character.
-                    int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
-
-                    // Get the index of the first vertex used by this text element.
-                    int vertexIndex = textInfo.characterInfo[i].vertexIndex;
-
-                    // Get the cached vertices of the mesh used by this text element (character or sprite).
-                    Vector3[] sourceVertices = cachedMeshInfo[materialIndex].vertices;
-
-                    // Determine the center point of each character at the baseline.
-                    //Vector2 charMidBasline = new Vector2((sourceVertices[vertexIndex + 0].x + sourceVertices[vertexIndex + 2].x) / 2, charInfo.baseLine);
-                    // Determine the center point of each character.
-                    Vector2 charMidBasline = (sourceVertices[vertexIndex + 0] + sourceVertices[vertexIndex + 2]) / 2;
-
-                    // Need to translate all 4 vertices of each quad to aligned with middle of character / baseline.
-                    // This is needed so the matrix TRS is applied at the origin for each character.
-                    Vector3 offset = charMidBasline;
-
-                    Vector3[] destinationVertices = textInfo.meshInfo[materialIndex].vertices;
-
-                    destinationVertices[vertexIndex + 0] = sourceVertices[vertexIndex + 0] - offset;
-                    destinationVertices[vertexIndex + 1] = sourceVertices[vertexIndex + 1] - offset;
-                    destinationVertices[vertexIndex + 2] = sourceVertices[vertexIndex + 2] - offset;
-                    destinationVertices[vertexIndex + 3] = sourceVertices[vertexIndex + 3] - offset;
-
-                    //vertAnim.angle = Mathf.SmoothStep(-vertAnim.angleRange, vertAnim.angleRange, Mathf.PingPong(loopCount / 25f * vertAnim.speed, 1f));
-                    Vector3 jitterOffset = new Vector3(UnityEngine.Random.Range(minPositionShake.x, maxPositionShake.x) * RandomPosOrNeg(), UnityEngine.Random.Range(minPositionShake.y, maxPositionShake.y) * RandomPosOrNeg(), 0);
-
-                    matrix = Matrix4x4.TRS(jitterOffset, Quaternion.Euler(0, 0, UnityEngine.Random.Range(minAngleShake, maxAngleShake) * RandomPosOrNeg()), Vector3.one);
-
-                    destinationVertices[vertexIndex + 0] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 0]);
-                    destinationVertices[vertexIndex + 1] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 1]);
-                    destinationVertices[vertexIndex + 2] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 2]);
-                    destinationVertices[vertexIndex + 3] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 3]);
-
-                    destinationVertices[vertexIndex + 0] += offset;
-                    destinationVertices[vertexIndex + 1] += offset;
-                    destinationVertices[vertexIndex + 2] += offset;
-                    destinationVertices[vertexIndex + 3] += offset;
-
-                    //vertexAnim[i] = vertAnim;
+                    hasTextChanged = false;
                 }
-            }
 
-            // Push changes into meshes
-            for (int i = 0; i < textInfo.meshInfo.Length; i++)
-            {
-                textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
-                UpdateGeometry(textInfo.meshInfo[i].mesh, i);
+                for (int i = 0; i < textInfo.characterInfo.Length; i++)
+                {
+                    // Skip characters that are not visible and thus have no geometry to manipulate.
+                    if (!textInfo.characterInfo[i].isVisible)
+                        continue;
+
+                    if (textInfo.characterInfo[i].shaky)
+                    {
+                        // Get the index of the material used by the current character.
+                        int materialIndex = textInfo.characterInfo[i].materialReferenceIndex;
+
+                        // Get the index of the first vertex used by this text element.
+                        int vertexIndex = textInfo.characterInfo[i].vertexIndex;
+
+                        // Get the cached vertices of the mesh used by this text element (character or sprite).
+                        Vector3[] sourceVertices = cachedMeshInfo[materialIndex].vertices;
+                        
+                        // Determine the center point of each character.
+                        Vector2 charCenter = (sourceVertices[vertexIndex + 0] + sourceVertices[vertexIndex + 2]) / 2;
+
+                        // Need to translate all 4 vertices of each quad to aligned with middle of character / baseline.
+                        // This is needed so the matrix TRS is applied at the origin for each character.
+                        Vector3 offset = charCenter;
+
+                        Vector3[] destinationVertices = textInfo.meshInfo[materialIndex].vertices;
+
+                        destinationVertices[vertexIndex + 0] = sourceVertices[vertexIndex + 0] - offset;
+                        destinationVertices[vertexIndex + 1] = sourceVertices[vertexIndex + 1] - offset;
+                        destinationVertices[vertexIndex + 2] = sourceVertices[vertexIndex + 2] - offset;
+                        destinationVertices[vertexIndex + 3] = sourceVertices[vertexIndex + 3] - offset;
+                        
+                        Vector3 jitterOffset = new Vector3(UnityEngine.Random.Range(minPositionShake.x, maxPositionShake.x) * RandomPosOrNeg(), UnityEngine.Random.Range(minPositionShake.y, maxPositionShake.y) * RandomPosOrNeg(), 0);
+
+                        matrix = Matrix4x4.TRS(jitterOffset, Quaternion.Euler(0, 0, UnityEngine.Random.Range(minAngleShake, maxAngleShake) * RandomPosOrNeg()), Vector3.one);
+
+                        destinationVertices[vertexIndex + 0] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 0]);
+                        destinationVertices[vertexIndex + 1] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 1]);
+                        destinationVertices[vertexIndex + 2] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 2]);
+                        destinationVertices[vertexIndex + 3] = matrix.MultiplyPoint3x4(destinationVertices[vertexIndex + 3]);
+
+                        destinationVertices[vertexIndex + 0] += offset;
+                        destinationVertices[vertexIndex + 1] += offset;
+                        destinationVertices[vertexIndex + 2] += offset;
+                        destinationVertices[vertexIndex + 3] += offset;
+                    }
+                }
+
+                // Push changes into meshes
+                for (int i = 0; i < textInfo.meshInfo.Length; i++)
+                {
+                    textInfo.meshInfo[i].mesh.vertices = textInfo.meshInfo[i].vertices;
+                    UpdateGeometry(textInfo.meshInfo[i].mesh, i);
+                }
             }
         }
 
