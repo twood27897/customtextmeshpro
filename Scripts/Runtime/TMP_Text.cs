@@ -236,7 +236,7 @@ namespace TMPro
         protected Color32 m_strikethroughColor = s_colorWhite;
         protected Color32 m_highlightColor = s_colorWhite;
         protected Vector4 m_highlightPadding = Vector4.zero;
-        
+
 
         /// <summary>
         /// Sets the vertex color alpha value.
@@ -262,7 +262,7 @@ namespace TMPro
 
         [SerializeField]
         protected ColorMode m_colorMode = ColorMode.FourCornersGradient;
-        
+
         /// <summary>
         /// Sets the vertex colors for each of the 4 vertices of the character quads.
         /// </summary>
@@ -531,7 +531,7 @@ namespace TMPro
         public float characterSpacing
         {
             get { return m_characterSpacing; }
-            set { if (m_characterSpacing == value) return; m_havePropertiesChanged = true; m_isCalculateSizeRequired = true;  m_characterSpacing = value; SetVerticesDirty(); SetLayoutDirty(); }
+            set { if (m_characterSpacing == value) return; m_havePropertiesChanged = true; m_isCalculateSizeRequired = true; m_characterSpacing = value; SetVerticesDirty(); SetLayoutDirty(); }
         }
         [SerializeField]
         protected float m_characterSpacing = 0;
@@ -762,6 +762,107 @@ namespace TMPro
         protected bool m_enableExtraPadding = false;
         [SerializeField]
         protected bool checkPaddingRequired;
+
+        // BEGIN - helloimtw
+        /// <summary>
+        /// Parameters which control the way the wavy tag works on this text element
+        /// </summary>
+        public float waveScale
+        {
+            get { return m_waveScale; }
+            set { if (m_waveScale == value) return; m_havePropertiesChanged = true; m_waveScale = value; }
+        }
+        [SerializeField]
+        protected float m_waveScale = 1.0f;
+
+        public float waveSpeed
+        {
+            get { return m_waveSpeed; }
+            set { if (m_waveSpeed == value) return; m_havePropertiesChanged = true; m_waveSpeed = value; }
+        }
+        [SerializeField]
+        protected float m_waveSpeed = 1.0f;
+
+        public float waveDistanceBetweenLetters
+        {
+            get { return m_waveDistanceBetweenLetters; }
+            set { if (m_waveDistanceBetweenLetters == value) return; m_havePropertiesChanged = true; m_waveDistanceBetweenLetters = value; }
+        }
+        [SerializeField]
+        protected float m_waveDistanceBetweenLetters = 1.0f;
+
+        /// <summary>
+        /// Parameters which control the way the shaky tag works on this text element
+        /// </summary>
+        public Vector2 minPositionShake
+        {
+            get { return m_minPositionShake; }
+            set { if (m_minPositionShake == value) return; m_havePropertiesChanged = true; m_minPositionShake = value; }
+        }
+        [SerializeField]
+        protected Vector2 m_minPositionShake = new Vector2(0.0f, 0.0f);
+
+        public Vector2 maxPositionShake
+        {
+            get { return m_maxPositionShake; }
+            set { if (m_maxPositionShake == value) return; m_havePropertiesChanged = true; m_maxPositionShake = value; }
+        }
+        [SerializeField]
+        protected Vector2 m_maxPositionShake = new Vector2(1.0f, 1.0f);
+
+        public float minAngleShake
+        {
+            get { return m_minAngleShake; }
+            set { if (m_minAngleShake == value) return; m_havePropertiesChanged = true; m_minAngleShake = value; }
+        }
+        [SerializeField]
+        protected float m_minAngleShake = 0.0f;
+
+        public float maxAngleShake
+        {
+            get { return m_maxAngleShake; }
+            set { if (m_maxAngleShake == value) return; m_havePropertiesChanged = true; m_maxAngleShake = value; }
+        }
+        [SerializeField]
+        protected float m_maxAngleShake = 20.0f;
+
+        public float shakesPerSecond
+        {
+            get { return m_shakesPerSecond; }
+            set { if (m_shakesPerSecond == value) return; m_havePropertiesChanged = true; m_shakesPerSecond = value; }
+        }
+        [SerializeField]
+        protected float m_shakesPerSecond = 5.0f;
+
+        /// <summary>
+        /// Parameters which control the way the colourful tag works on this text element
+        /// </summary>
+        public Gradient colourCycle
+        {
+            get { return m_colourCycle; }
+            set { if (m_colourCycle == value) return; m_havePropertiesChanged = true; m_colourCycle = value; }
+        }
+        [SerializeField]
+        protected Gradient m_colourCycle;
+
+        public float colourCycleSpeed
+        {
+            get { return m_colourCycleSpeed; }
+            set { if (m_colourCycleSpeed == value) return; m_havePropertiesChanged = true; m_colourCycleSpeed = value; }
+        }
+        [SerializeField]
+        protected float m_colourCycleSpeed = 1.0f;
+
+        public float colourCycleOffset
+        {
+            get { return m_colourCycleOffset; }
+            set { if (m_colourCycleOffset == value) return; m_havePropertiesChanged = true; m_colourCycleOffset = value; }
+        }
+        [SerializeField]
+        protected float m_colourCycleOffset = 0.0f;
+
+        protected float _timer = 0.0f;
+        // END - helloimtw
 
 
         /// <summary>
@@ -5637,7 +5738,6 @@ namespace TMPro
         /// Function used as a replacement for LateUpdate()
         /// </summary>
         internal virtual void InternalUpdate() { }
-
 
         /// <summary>
         /// Function to pack scale information in the UV2 Channel.

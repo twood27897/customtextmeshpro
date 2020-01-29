@@ -60,7 +60,23 @@ namespace TMPro.EditorUtilities
 
         static readonly GUIContent k_KerningLabel = new GUIContent("Kerning", "Enables character specific spacing between pairs of characters.");
         static readonly GUIContent k_PaddingLabel = new GUIContent("Extra Padding", "Adds some padding between the characters and the edge of the text mesh. Can reduce graphical errors when displaying small text.");
-        
+
+        // BEGIN - helloimtw
+        static readonly GUIContent k_WaveScaleLabel = new GUIContent("Wave Scale", "The scale of the wave in the y-axis. How far the letters will move up and down.");
+        static readonly GUIContent k_WaveSpeedLabel = new GUIContent("Wave Speed", "The speed of the wave. How fast the letters will move up and down.");
+        static readonly GUIContent k_WaveDistanceBetweenLettersLabel = new GUIContent("Distance Between Letters In Wave", "The distance between the letters in the wave. 0 means all letters will move together. The greater this value the more letters will move independently of one another in the wave.");
+
+        static readonly GUIContent k_MinPositionShakeLabel = new GUIContent("Min Position Shake", "The minimum amount a letter will move in the x- and y-axis when it shakes.");
+        static readonly GUIContent k_MaxPositionShakeLabel = new GUIContent("Max Position Shake", "The maximum amount a letter will move in the x- and y-axis when it shakes.");
+        static readonly GUIContent k_MinAngleShakeLabel = new GUIContent("Min Angle Shake", "The minimum angle by which a letter will rotate when it shakes.");
+        static readonly GUIContent k_MaxAngleShakeLabel = new GUIContent("Max Angle Shake", "The maximum angle by which a letter will rotate when it shakes.");
+        static readonly GUIContent k_ShakesPerSecondLabel = new GUIContent("Shakes Per Second", "How many times the letters will shake per second.");
+
+        static readonly GUIContent k_ColourCycleLabel = new GUIContent("Colour Cycle", "The gradient of colours the letters will go through as they change.");
+        static readonly GUIContent k_ColourCycleSpeedLabel = new GUIContent("Colour Cycle Speed", "The speed at which the letters will change colour.");
+        static readonly GUIContent k_ColourCycleOffsetLabel = new GUIContent("Colour Cycle Offset", "The difference by which colours will sample the gradient provided. 0 means all letters will change colour together.");
+        // END - helloimtw
+
         static readonly GUIContent k_LeftLabel = new GUIContent("Left");
         static readonly GUIContent k_TopLabel = new GUIContent("Top");
         static readonly GUIContent k_RightLabel = new GUIContent("Right");
@@ -140,7 +156,26 @@ namespace TMPro.EditorUtilities
         protected SerializedProperty m_EnableEscapeCharacterParsingProp;
         protected SerializedProperty m_UseMaxVisibleDescenderProp;
         protected SerializedProperty m_GeometrySortingOrderProp;
-        
+
+        // BEGIN - helloimtw
+        protected SerializedProperty m_WaveScaleProp;
+        protected SerializedProperty m_WaveSpeedProp;
+        protected SerializedProperty m_WaveDistanceBetweenLettersProp;
+        protected bool m_ShowWaveSettings = false;
+
+        protected SerializedProperty m_MinPositionShakeProp;
+        protected SerializedProperty m_MaxPositionShakeProp;
+        protected SerializedProperty m_MinAngleShakeProp;
+        protected SerializedProperty m_MaxAngleShakeProp;
+        protected SerializedProperty m_ShakesPerSecondProp;
+        protected bool m_ShowShakeSettings = false;
+
+        protected SerializedProperty m_ColourCycleProp;
+        protected SerializedProperty m_ColourCycleSpeedProp;
+        protected SerializedProperty m_ColourCycleOffsetProp;
+        protected bool m_ShowColourCycleSettings = false;
+        // END - helloimtw
+
         protected SerializedProperty m_SpriteAssetProp;
         
         protected SerializedProperty m_MarginProp;
@@ -208,7 +243,23 @@ namespace TMPro.EditorUtilities
             m_CheckPaddingRequiredProp = serializedObject.FindProperty("checkPaddingRequired");
             m_EnableEscapeCharacterParsingProp = serializedObject.FindProperty("m_parseCtrlCharacters");
             m_UseMaxVisibleDescenderProp = serializedObject.FindProperty("m_useMaxVisibleDescender");
-            
+
+            // BEGIN - helloimtw
+            m_WaveScaleProp = serializedObject.FindProperty("m_waveScale");
+            m_WaveSpeedProp = serializedObject.FindProperty("m_waveSpeed");
+            m_WaveDistanceBetweenLettersProp = serializedObject.FindProperty("m_waveDistanceBetweenLetters");
+
+            m_MinPositionShakeProp = serializedObject.FindProperty("m_minPositionShake");
+            m_MaxPositionShakeProp = serializedObject.FindProperty("m_maxPositionShake");
+            m_MinAngleShakeProp = serializedObject.FindProperty("m_minAngleShake");
+            m_MaxAngleShakeProp = serializedObject.FindProperty("m_maxAngleShake");
+            m_ShakesPerSecondProp = serializedObject.FindProperty("m_shakesPerSecond");
+
+            m_ColourCycleProp = serializedObject.FindProperty("m_colourCycle");
+            m_ColourCycleSpeedProp = serializedObject.FindProperty("m_colourCycleSpeed");
+            m_ColourCycleOffsetProp = serializedObject.FindProperty("m_colourCycleOffset");
+            // END - helloimtw
+
             m_GeometrySortingOrderProp = serializedObject.FindProperty("m_geometrySortingOrder");
             
             m_SpriteAssetProp = serializedObject.FindProperty("m_spriteAsset");
@@ -1023,6 +1074,67 @@ namespace TMPro.EditorUtilities
                 m_CheckPaddingRequiredProp.boolValue = true;
             }
         }
+
+        // BEGIN - helloimtw
+        protected void DrawWaveSettings()
+        {
+            EditorGUILayout.Space();
+
+            // WAVES
+            EditorGUI.BeginChangeCheck();
+            m_ShowWaveSettings = EditorGUILayout.Foldout(m_ShowWaveSettings, "<WAVY> Tag Settings", true, TMP_UIStyleManager.boldFoldout);
+            if (m_ShowWaveSettings)
+            {
+                EditorGUILayout.PropertyField(m_WaveScaleProp, k_WaveScaleLabel);
+                EditorGUILayout.PropertyField(m_WaveSpeedProp, k_WaveSpeedLabel);
+                EditorGUILayout.PropertyField(m_WaveDistanceBetweenLettersProp, k_WaveDistanceBetweenLettersLabel);
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_HavePropertiesChanged = true;
+            }
+        }
+
+        protected void DrawShakeSettings()
+        {
+            EditorGUILayout.Space();
+
+            // SHAKES
+            EditorGUI.BeginChangeCheck();
+            m_ShowShakeSettings = EditorGUILayout.Foldout(m_ShowShakeSettings, "<SHAKY> Tag Settings", true, TMP_UIStyleManager.boldFoldout);
+            if (m_ShowShakeSettings)
+            {
+                EditorGUILayout.PropertyField(m_MinPositionShakeProp, k_MinPositionShakeLabel);
+                EditorGUILayout.PropertyField(m_MaxPositionShakeProp, k_MaxPositionShakeLabel);
+                EditorGUILayout.PropertyField(m_MinAngleShakeProp, k_MinAngleShakeLabel);
+                EditorGUILayout.PropertyField(m_MaxAngleShakeProp, k_MaxAngleShakeLabel);
+                EditorGUILayout.PropertyField(m_ShakesPerSecondProp, k_ShakesPerSecondLabel);
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_HavePropertiesChanged = true;
+            }
+        }
+
+        protected void DrawColourfulSettings()
+        {
+            EditorGUILayout.Space();
+
+            // COLOURS
+            EditorGUI.BeginChangeCheck();
+            m_ShowColourCycleSettings = EditorGUILayout.Foldout(m_ShowColourCycleSettings, "<COLOURFUL> Tag Settings", true, TMP_UIStyleManager.boldFoldout);
+            if (m_ShowColourCycleSettings)
+            {
+                EditorGUILayout.PropertyField(m_ColourCycleProp, k_ColourCycleLabel);
+                EditorGUILayout.PropertyField(m_ColourCycleSpeedProp, k_ColourCycleSpeedLabel);
+                EditorGUILayout.PropertyField(m_ColourCycleOffsetProp, k_ColourCycleOffsetLabel);
+            }
+            if (EditorGUI.EndChangeCheck())
+            {
+                m_HavePropertiesChanged = true;
+            }
+        }
+        // END - helloimtw
 
         /// <summary>
         /// Method to retrieve the material presets that match the currently selected font asset.

@@ -54,6 +54,14 @@ namespace TMPro.EditorUtilities
 
                 DrawPadding();
 
+                // BEGIN - helloimtw
+                DrawWaveSettings();
+
+                DrawShakeSettings();
+
+                DrawColourfulSettings();
+                // END - helloimtw
+
                 EditorGUI.indentLevel -= 1;
             }
         }
