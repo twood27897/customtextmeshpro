@@ -874,6 +874,7 @@ namespace TMPro
 
         protected float _timer = 0.0f;
         protected float _shakesTimer = 0.0f;
+        protected int _shakesSeed = 0;
         // END - helloimtw
 
 
